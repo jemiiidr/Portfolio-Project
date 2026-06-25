@@ -37,6 +37,24 @@ export default function ProjectsHome() {
       timeline.style.setProperty("--timeline-dot-y", `${dotY}px`);
       section.style.setProperty("--timeline-progress", progress.toFixed(3));
 
+      const endButtonProgress = clamp((progress - 0.78) / 0.16, 0, 1);
+      const endButtonSize = 3 + endButtonProgress * 3;
+
+      section.style.setProperty(
+        "--timeline-end-size",
+        `${endButtonSize.toFixed(2)}rem`,
+      );
+
+      section.style.setProperty(
+        "--timeline-end-opacity",
+        endButtonProgress.toFixed(3),
+      );
+
+      section.style.setProperty(
+        "--timeline-end-glow",
+        `${(endButtonProgress * 1.4).toFixed(2)}rem`,
+      );
+
       const dot = timeline.querySelector<HTMLElement>(".project-timeline-dot");
       const checkpoints =
         section.querySelectorAll<HTMLElement>(".project-static-node");
@@ -67,7 +85,7 @@ export default function ProjectsHome() {
       });
 
       setIsTimelineComplete((currentValue) => {
-        const nextValue = progress > 0.985;
+        const nextValue = progress > 0.92;
 
         return currentValue === nextValue ? currentValue : nextValue;
       });
@@ -119,14 +137,10 @@ export default function ProjectsHome() {
       </div>
 
       <div className="project-timeline-content relative mx-auto mt-32 max-w-7xl pb-128 pt-20">
-        <div
-          ref={timelineRef}
-          aria-hidden="true"
-          className="project-timeline-axis hidden lg:block"
-        >
-          <div className="project-timeline-trail" />
-          <div className="project-timeline-dot" />
-          <div className="project-timeline-end-marker" />
+        <div ref={timelineRef} className="project-timeline-axis hidden lg:block">
+          <div aria-hidden="true" className="project-timeline-trail" />
+          <div aria-hidden="true" className="project-timeline-dot" />
+          <div aria-hidden="true" className="project-timeline-end-marker" />
 
           <Link href="/projects" className="project-timeline-end-button">
             <span>View all projects</span>

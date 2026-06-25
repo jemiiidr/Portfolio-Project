@@ -1,4 +1,5 @@
 import AboutHome from "@/components/sections/Home/AboutHome";
+import ConnectHome from "@/components/sections/Home/ConnectHome";
 import HeroSection from "@/components/sections/Home/HeroSection";
 import ProjectsHome from "@/components/sections/Home/ProjectsHome";
 import SkillsHome from "@/components/sections/Home/SkillsHome";
@@ -23,6 +24,7 @@ export default function HomePage() {
       <AboutHome/>
       <SkillsHome/>
       <ProjectsHome/>
+      <ConnectHome/>
     </main>
   );
 }
