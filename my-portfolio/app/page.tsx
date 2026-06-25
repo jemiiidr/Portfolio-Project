@@ -1,5 +1,6 @@
 import AboutHome from "@/components/sections/Home/AboutHome";
 import HeroSection from "@/components/sections/Home/HeroSection";
+import ProjectsHome from "@/components/sections/Home/ProjectsHome";
 import SkillsHome from "@/components/sections/Home/SkillsHome";
 import type { Metadata } from "next";
 
@@ -21,6 +22,7 @@ export default function HomePage() {
       <HeroSection/>
       <AboutHome/>
       <SkillsHome/>
+      <ProjectsHome/>
     </main>
   );
 }

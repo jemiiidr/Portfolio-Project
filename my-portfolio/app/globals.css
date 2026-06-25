@@ -366,3 +366,219 @@ to {
 transform: translateX(-50%);
 }
 }
+
+/* PROJECTS TIMELINE SECTION */
+.projects-section {
+  --timeline-dot-y: 0px;
+  --timeline-progress: 0;
+}
+
+.project-timeline-content {
+  min-height: 220vh;
+}
+
+.project-timeline-axis {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 4rem;
+  transform: translateX(-50%);
+}
+
+.project-timeline-axis::before {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  content: "";
+  border-left: 1px dashed color-mix(in srgb, var(--cream) 35%, transparent);
+  transform: translateX(-50%);
+}
+
+.project-timeline-dot {
+  position: absolute;
+  left: 50%;
+  top: var(--timeline-dot-y);
+  z-index: 4;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  background: var(--cream);
+  transform: translate(-50%, -50%);
+  transition:
+    width 300ms ease,
+    height 300ms ease,
+    background 300ms ease,
+    opacity 300ms ease;
+}
+
+.project-timeline-trail {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--timeline-dot-y) - 7rem);
+  z-index: 3;
+  width: 2px;
+  height: 7rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--logic) 85%, transparent)
+  );
+  opacity: 0.75;
+  transform: translateX(-50%);
+  transition: top 120ms ease-out;
+}
+
+.project-static-node {
+  position: absolute;
+  left: 50%;
+  top: 2.25rem;
+  z-index: 2;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: var(--cream);
+  transform: translateX(-50%);
+}
+
+.project-timeline-end-marker {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 9999px;
+  background: var(--cream);
+  opacity: 0;
+  transform: translate(-50%, 50%);
+  transition: opacity 250ms ease;
+}
+
+.projects-complete .project-timeline-dot {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  background: var(--logic);
+}
+
+.projects-complete .project-timeline-end-marker {
+  opacity: 1;
+}
+
+.project-timeline-end-button {
+  position: absolute;
+  left: calc(50% - 1.5rem);
+  bottom: 0;
+  z-index: 5;
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--logic);
+  color: var(--cream);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(50%) scale(0.75);
+  transition:
+    width 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 250ms ease,
+    transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-timeline-end-button span {
+  width: max-content;
+  opacity: 0;
+  transform: translateX(-1rem);
+  transition:
+    opacity 250ms ease,
+    transform 350ms ease;
+}
+
+.projects-complete .project-timeline-end-button {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(50%) scale(1);
+}
+
+.projects-complete .project-timeline-end-button:hover {
+  width: min(46vw, 34rem);
+  border-radius: 9999px;
+  justify-content: start;
+  padding-left: 2rem;
+}
+
+.projects-complete .project-timeline-end-button:hover span {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.project-row {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@supports (animation-timeline: view()) {
+  .project-row {
+    opacity: 0;
+    animation: project-row-in both ease-out;
+    animation-timeline: view();
+    animation-range: entry 8% cover 35%;
+  }
+
+  .project-row[data-side="left"] {
+    --project-card-x: -4rem;
+  }
+
+  .project-row[data-side="right"] {
+    --project-card-x: 4rem;
+  }
+}
+
+@keyframes project-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--project-card-x, 0)) translateY(4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.project-card {
+  min-height: 16rem;
+}
+
+.project-card::after {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  content: "";
+  border: 1px solid transparent;
+  transition: border-color 300ms ease;
+}
+
+.project-card:hover::after {
+  border-color: var(--logic);
+}
+
+@media (max-width: 1023px) {
+  .projects-section {
+    min-height: auto;
+  }
+
+  .project-timeline-content {
+    min-height: auto;
+    padding-bottom: 8rem;
+  }
+}
