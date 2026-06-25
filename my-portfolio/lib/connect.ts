@@ -15,7 +15,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Facebook",
-    handle: "Jamie del Rosario",
+    handle: "Del Rosario Jamie",
     href: "https://www.facebook.com/JmiGdR/",
     icon: "fb",
   },
