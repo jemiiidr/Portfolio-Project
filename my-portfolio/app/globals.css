@@ -228,7 +228,7 @@ opacity: 1;
 .hero-cursor-tooltip {
 transform: translate3d(
 calc(var(--cursor-x) + 0.9rem),
-calc(var(--cursor-y) + 1rem),
+calc(var(--cursor-y) + 0.9rem),
 0
 )
 rotate(-2deg);
@@ -236,7 +236,7 @@ rotate(-2deg);
 
 .hero-cursor-type {
 display: inline-block;
-max-width: 11ch;
+max-width: 12ch;
 overflow: hidden;
 white-space: nowrap;
 border-right: 2px solid var(--logic);
@@ -251,7 +251,7 @@ width: 0;
 }
 
 to {
-width: 11ch;
+width: 12ch;
 }
 }
 
@@ -367,6 +367,9 @@ transform: translateX(-50%);
 }
 }
 
+
+
+
 /* PROJECTS TIMELINE SECTION */
 .projects-section {
   --timeline-dot-y: 0px;
@@ -430,13 +433,14 @@ transform: translateX(-50%);
   transition: top 120ms ease-out;
 }
 
+/* made dots invisible */
 .project-static-node {
   position: absolute;
   left: 50%;
   top: 2.25rem;
   z-index: 2;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0rem;
+  height: 0rem;
   border-radius: 9999px;
   background: var(--cream);
   transform: translateX(-50%);
@@ -556,7 +560,7 @@ transform: translateX(-50%);
 }
 
 .project-card {
-  min-height: 16rem;
+  min-height: 0;
 }
 
 .project-card::after {
@@ -572,6 +576,46 @@ transform: translateX(-50%);
   border-color: var(--logic);
 }
 
+.project-card-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-0.75rem);
+  transition:
+    grid-template-rows 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 350ms ease,
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card-reveal-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-card-reveal-open,
+.project-card[data-expanded="true"] .project-card-reveal {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card-link {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(1rem);
+  transition:
+    opacity 350ms ease,
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card[data-expanded="true"]:hover .project-card-link,
+.project-card:hover .project-card-reveal-open .project-card-link {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+
 @media (max-width: 1023px) {
   .projects-section {
     min-height: auto;
@@ -580,5 +624,17 @@ transform: translateX(-50%);
   .project-timeline-content {
     min-height: auto;
     padding-bottom: 8rem;
+  }
+
+  .project-card-reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .project-card-link {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 }

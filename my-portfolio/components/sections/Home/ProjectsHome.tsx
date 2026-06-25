@@ -12,7 +12,9 @@ function clamp(value: number, minimum: number, maximum: number) {
 export default function ProjectsHome() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
+
   const [isTimelineComplete, setIsTimelineComplete] = useState(false);
+  const [activeProjectIndex, setActiveProjectIndex] = useState(-1);
 
   useEffect(() => {
     let animationFrameId = 0;
@@ -35,6 +37,35 @@ export default function ProjectsHome() {
       timeline.style.setProperty("--timeline-dot-y", `${dotY}px`);
       section.style.setProperty("--timeline-progress", progress.toFixed(3));
 
+      const dot = timeline.querySelector<HTMLElement>(".project-timeline-dot");
+      const checkpoints =
+        section.querySelectorAll<HTMLElement>(".project-static-node");
+
+      if (!dot || checkpoints.length === 0) {
+        return;
+      }
+
+      const dotRect = dot.getBoundingClientRect();
+      const dotCenterY = dotRect.top + dotRect.height / 2;
+
+      let nextActiveProjectIndex = -1;
+
+      checkpoints.forEach((checkpoint, index) => {
+        const checkpointRect = checkpoint.getBoundingClientRect();
+        const checkpointCenterY =
+          checkpointRect.top + checkpointRect.height / 2;
+
+        if (dotCenterY >= checkpointCenterY - 4) {
+          nextActiveProjectIndex = index;
+        }
+      });
+
+      setActiveProjectIndex((currentValue) => {
+        return currentValue === nextActiveProjectIndex
+          ? currentValue
+          : nextActiveProjectIndex;
+      });
+
       setIsTimelineComplete((currentValue) => {
         const nextValue = progress > 0.985;
 
@@ -52,6 +83,7 @@ export default function ProjectsHome() {
     window.addEventListener("scroll", requestTimelineUpdate, {
       passive: true,
     });
+
     window.addEventListener("resize", requestTimelineUpdate);
 
     return () => {
@@ -65,11 +97,11 @@ export default function ProjectsHome() {
     <section
       ref={sectionRef}
       id="projects"
-      className={`projects-section relative min-h-[320vh] overflow-hidden bg-blk2 px-6 py-28 text-cream md:px-10 ${
+      className={`projects-section relative min-h-[320vh] overflow-hidden bg-blk2 px-6 pb-28 text-cream md:px-10 ${
         isTimelineComplete ? "projects-complete" : ""
       }`}
     >
-      <div className="sticky top-24 z-20 mx-auto max-w-3xl text-center">
+      <div className="z-20 mx-auto max-w-3xl pb-28 text-center">
         <p className="mb-5 text-xs font-medium uppercase tracking-[0.45em] text-muted-cream">
           Projects
         </p>
@@ -116,7 +148,11 @@ export default function ProjectsHome() {
                   className="project-static-node hidden lg:block"
                 />
 
-                <ProjectTimelineCard project={project} side={side} />
+                <ProjectTimelineCard
+                  project={project}
+                  side={side}
+                  expanded={index <= activeProjectIndex}
+                />
               </div>
             );
           })}
