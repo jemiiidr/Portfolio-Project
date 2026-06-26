@@ -1,28 +1,6 @@
 import Link from "next/link";
+import { navItems } from "@/lib/navbar";
 
-interface NavItem {
-  label: string;
-  href: string;
-}
-
-const navItems: NavItem[] = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "About",
-    href: "/about",
-  },
-  {
-    label: "Projects",
-    href: "/projects",
-  },
-  {
-    label: "Contact",
-    href: "/contact",
-  },
-];
 
 export default function Navbar() {
   return (
