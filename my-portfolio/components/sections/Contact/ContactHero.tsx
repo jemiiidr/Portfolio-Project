@@ -1,4 +1,4 @@
-import ContactForm from "./ContactForm";
+import ContactForm from "@/components/sections/Contact/ContactForm";
 
 export default function ContactHero() {
 	return (
@@ -25,8 +25,6 @@ export default function ContactHero() {
 
 					<ContactForm />
 				</div>
-
-				{/* <ContactIllustration /> */}
 			</div>
 		</section>
 	);

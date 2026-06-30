@@ -208,20 +208,20 @@ export default function HeroSection() {
 				</p>
 
 				<div ref={titleRef} className="hero-title-wrap relative">
-					<h1 className="hero-title-base text-[clamp(4.5rem,9vw,9.25rem)] font-black uppercase leading-[0.87] tracking-[-0.075em]">
+					<div className="hero-title-base text-[clamp(4.5rem,9vw,9.25rem)] font-black uppercase leading-[0.87] tracking-[-0.075em]">
 						<HeroTitleContent
 							variant="base"
 							onTextEnter={handleTextEnter}
 							onTextLeave={handleTextLeave}
 						/>
-					</h1>
+					</div>
 
-					<h1
+					<div
 						aria-hidden="true"
 						className="hero-title-highlight pointer-events-none absolute inset-0 text-[clamp(4.5rem,9vw,9.25rem)] font-black uppercase leading-[0.87] tracking-[-0.075em]"
 					>
 						<HeroTitleContent variant="highlight" />
-					</h1>
+					</div>
 				</div>
 
 				<p className="hero-typewriter mt-8 text-sm font-medium uppercase tracking-[0.42em] text-muted-cream md:mt-10 md:text-xl">

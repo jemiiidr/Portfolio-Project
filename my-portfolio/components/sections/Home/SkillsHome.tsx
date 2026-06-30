@@ -2,7 +2,16 @@ import { skills } from "@/lib/skill";
 import SkillCard from "./SkillCard";
 
 export default function SkillsHome() {
-	const marqueeSkills = [...skills, ...skills];
+	const marqueeSkills = [
+		...skills.map((skill) => ({
+			skill,
+			copy: "first",
+		})),
+		...skills.map((skill) => ({
+			skill,
+			copy: "second",
+		})),
+	];
 
 	return (
 		<section
@@ -26,8 +35,8 @@ export default function SkillsHome() {
 
 			<div className="scroll-reveal skills-marquee mt-10 py-10">
 				<div className="skills-marquee-track">
-					{marqueeSkills.map((skill, index) => (
-						<SkillCard key={`${skill.title}-${index}`} skill={skill} />
+					{marqueeSkills.map(({ skill, copy }) => (
+						<SkillCard key={`${copy}-${skill.title}`} skill={skill} />
 					))}
 				</div>
 			</div>

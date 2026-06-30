@@ -1,20 +1,18 @@
-import type { SubjectSuggestion } from "@/types/contact";
-
-export const subjectSuggestions: SubjectSuggestion[] = [
+export const subjectSuggestions = [
 	{
-		label: "Portfolio Inquiry",
-		value: "Portfolio Inquiry",
+		label: "Project Inquiry",
+		value: "Project Inquiry",
 	},
 	{
-		label: "Project Collaboration",
-		value: "Project Collaboration",
+		label: "Collaboration",
+		value: "Collaboration",
 	},
 	{
-		label: "Internship / Work Opportunity",
-		value: "Internship / Work Opportunity",
+		label: "Research",
+		value: "Research",
 	},
 	{
-		label: "Frontend Development",
-		value: "Frontend Development",
+		label: "Freelance Work",
+		value: "Freelance Work",
 	},
-];
+] as const;

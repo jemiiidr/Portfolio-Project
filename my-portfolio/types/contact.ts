@@ -1,13 +1,16 @@
-export type ContactFormValues = {
+export type ContactFieldName = "name" | "email" | "subject" | "message";
+
+export interface ContactFormValues {
 	name: string;
 	email: string;
 	subject: string;
 	message: string;
-};
+}
 
-export type ContactFieldName = keyof ContactFormValues;
+export type ContactFormStatus = "idle" | "success" | "error";
 
-export type SubjectSuggestion = {
-	label: string;
-	value: string;
-};
+export interface ContactFormState {
+	status: ContactFormStatus;
+	message: string;
+	values: ContactFormValues;
+}

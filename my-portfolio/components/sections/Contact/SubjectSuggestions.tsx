@@ -1,8 +1,10 @@
+"use client";
+
 import { subjectSuggestions } from "@/lib/contact";
 
-type SubjectSuggestionsProps = {
+interface SubjectSuggestionsProps {
 	onSelect: (subject: string) => void;
-};
+}
 
 export default function SubjectSuggestions({
 	onSelect,
