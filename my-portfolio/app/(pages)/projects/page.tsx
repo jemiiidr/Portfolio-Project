@@ -1,7 +1,6 @@
-export default function AboutPage () {
- return (
-    <div className="text-center m-auto my-100">
-        Project 
-    </div>
- );
+import ProjectsPageClient from "@/components/sections/Projects/ProjectsPageClient";
+import { projects } from "@/lib/project";
+
+export default function ProjectsPage() {
+  return <ProjectsPageClient projects={projects} />;
 }

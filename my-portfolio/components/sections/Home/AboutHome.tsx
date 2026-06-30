@@ -1,69 +1,111 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { useRef } from "react";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
 export default function AboutHome() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+	const sectionRef = useRef<HTMLElement | null>(null);
+	const kickerRef = useRef<HTMLParagraphElement | null>(null);
+	const textRef = useRef<HTMLHeadingElement | null>(null);
 
-  useEffect(() => {
-    const section = sectionRef.current;
+	useGSAP(
+		() => {
+			const section = sectionRef.current;
+			const kicker = kickerRef.current;
+			const text = textRef.current;
 
-    if (!section) {
-      return;
-    }
+			if (!section || !kicker || !text) {
+				return;
+			}
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      {
-        threshold: 0.35,
-      },
-    );
+			gsap.fromTo(
+				kicker,
+				{
+					opacity: 0,
+					y: 100,
+					filter: "blur(6px)",
+				},
+				{
+					opacity: 1,
+					y: 0,
+					filter: "blur(0px)",
+					duration: 3,
+					ease: "power3.out",
+					scrollTrigger: {
+						trigger: section,
+						start: "top 100%",
+					},
+				},
+			);
 
-    observer.observe(section);
+			const splitText = SplitText.create(text, {
+				type: "lines",
+				linesClass: "about-line",
+			});
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+			gsap.set(splitText.lines, {
+				"--line-progress": "0%",
+			});
 
-  return (
-    <section
-      ref={sectionRef}
-      id="about"
-      className="flex min-h-screen min-w-screen items-center bg-blk1 px-8 py-32 text-cream md:px-24 lg:px-36"
-    >
-      <div className="max-w-5xl">
-        <p
-          className={`mb-10 text-xs font-medium uppercase tracking-[0.45em] text-muted-cream transition-all duration-700 ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-          }`}
-        >
-          About Me
-        </p>
+			const timeline = gsap.timeline({
+				scrollTrigger: {
+					trigger: section,
+					start: "top 90%",
+					end: "bottom 120%",
+					toggleActions: "restart pause reverse pause",
+					scrub: 4,
+				},
+			});
 
-        <h2
-          className={`max-w-4xl text-3xl font-black leading-[1.08] tracking-[-0.045em] transition-all duration-700 md:text-5xl lg:text-6xl ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          }`}
-        >
-          I bridge the gap between creativity and technology. With experience
-          in UI/UX design, front-end development, and AI-driven solutions, I
-          build digital products that are{" "}
-          <span
-            className={`transition-colors delay-500 duration-700 ${
-              isVisible ? "text-logic" : "text-cream"
-            }`}
-          >
-            not only functional but thoughtfully designed
-          </span>{" "}
-          for the people who use them.
-        </h2>
-      </div>
-    </section>
-  );
+			timeline.to(splitText.lines, {
+				"--line-progress": "100%",
+				stagger: 0.3,
+				ease: "none",
+			});
+
+			ScrollTrigger.refresh();
+
+			return () => {
+				splitText.revert();
+			};
+		},
+		{
+			scope: sectionRef,
+		},
+	);
+
+	return (
+		<section
+			ref={sectionRef}
+			id="about"
+			className="flex min-h-screen w-full items-center bg-blk1 px-8 py-32 text-cream md:px-24 lg:px-36"
+		>
+			<div className="max-w-5xl">
+				<p
+					ref={kickerRef}
+					className="mb-10 text-xs font-medium uppercase tracking-[0.45em] text-muted-cream"
+				>
+					About Me
+				</p>
+
+				<h2
+					ref={textRef}
+					className="max-w-4xl text-3xl font-black leading-[1.08] tracking-[-0.045em] md:text-5xl lg:text-6xl"
+				>
+					I bridge the gap between creativity and technology. With experience in
+					UI/UX design, front-end development, and AI-driven solutions, I build
+					digital products that are{" "}
+					<span className="about-accent">
+						not only functional but thoughtfully designed
+					</span>{" "}
+					for the people who use them.
+				</h2>
+			</div>
+		</section>
+	);
 }

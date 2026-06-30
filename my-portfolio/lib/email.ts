@@ -1,21 +1,21 @@
 import type { ContactFormValues } from "@/types/contact";
 
 function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+	return value
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#039;");
 }
 
 export function createOwnerEmailHtml(values: ContactFormValues) {
-  const name = escapeHtml(values.name);
-  const email = escapeHtml(values.email);
-  const subject = escapeHtml(values.subject);
-  const message = escapeHtml(values.message).replaceAll("\n", "<br />");
+	const name = escapeHtml(values.name);
+	const email = escapeHtml(values.email);
+	const subject = escapeHtml(values.subject);
+	const message = escapeHtml(values.message).replaceAll("\n", "<br />");
 
-  return `
+	return `
     <div style="font-family: Arial, sans-serif; color: #1c1b1a; line-height: 1.6;">
       <h1>Email from Portfolio Site</h1>
 
@@ -32,11 +32,11 @@ export function createOwnerEmailHtml(values: ContactFormValues) {
 }
 
 export function createSenderAutoReplyHtml(values: ContactFormValues) {
-  const name = escapeHtml(values.name);
-  const email = escapeHtml(values.email);
-  const subject = escapeHtml(values.subject);
+	const name = escapeHtml(values.name);
+	const email = escapeHtml(values.email);
+	const subject = escapeHtml(values.subject);
 
-  return `
+	return `
     <div style="font-family: Arial, sans-serif; color: #1c1b1a; line-height: 1.6;">
       <h1>Thank you for reaching out to us</h1>
 

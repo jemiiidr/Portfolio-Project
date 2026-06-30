@@ -1,9 +1,9 @@
 export interface Project {
   slug: string;
-  year: string;
+  date: string;
   title: string;
   description: string;
   imageSrc: string;
   imageAlt: string;
+  tags: string[];
 }
-
