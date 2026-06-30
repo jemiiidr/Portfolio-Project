@@ -1,91 +1,74 @@
 "use client";
 
 import type { PointerEvent, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+	motion,
+	useMotionTemplate,
+	useMotionValue,
+	useSpring,
+} from "motion/react";
 
 const typewriterWords = ["CREATE.", "THINK.", "THRIVE."] as const;
 
-interface HeroTitleContentProps {
-	variant: "base" | "highlight";
-	onTextEnter?: () => void;
-	onTextLeave?: () => void;
-}
-
-interface HeroTitleLineProps {
-	children: ReactNode;
-	isInteractive: boolean;
-	onTextEnter?: () => void;
-	onTextLeave?: () => void;
-}
+const titleLines = [
+	<>Designing</>,
+	<>
+		With <span className="text-heart group-hover:text-cream">Heart.</span>
+	</>,
+	<>Building</>,
+	<>
+		With <span className="text-logic group-hover:text-cream">Logic.</span>
+	</>,
+];
 
 function HeroTitleLine({
 	children,
-	isInteractive,
+	index,
 	onTextEnter,
 	onTextLeave,
-}: HeroTitleLineProps) {
+}: {
+	children: ReactNode;
+	index: number;
+	onTextEnter: () => void;
+	onTextLeave: () => void;
+}) {
 	return (
-		<span className="hero-title-line">
+		<motion.span
+			className="block"
+			initial={{ opacity: 0, y: 32, scaleY: 0.96, filter: "blur(7px)" }}
+			animate={{ opacity: 1, y: 0, scaleY: 1, filter: "blur(0px)" }}
+			transition={{
+				duration: 0.85,
+				delay: 0.16 + index * 0.12,
+				ease: [0.22, 1, 0.36, 1],
+			}}
+		>
 			<span
-				className="hero-title-hit"
-				onPointerEnter={isInteractive ? onTextEnter : undefined}
-				onPointerLeave={isInteractive ? onTextLeave : undefined}
+				className="inline-block"
+				onPointerEnter={onTextEnter}
+				onPointerLeave={onTextLeave}
 			>
 				{children}
 			</span>
-		</span>
-	);
-}
-
-function HeroTitleContent({
-	variant,
-	onTextEnter,
-	onTextLeave,
-}: HeroTitleContentProps) {
-	const isInteractive = variant === "base";
-	const heartClassName = variant === "base" ? "text-heart" : "text-cream";
-	const logicClassName = variant === "base" ? "text-logic" : "text-cream";
-
-	return (
-		<>
-			<HeroTitleLine
-				isInteractive={isInteractive}
-				onTextEnter={onTextEnter}
-				onTextLeave={onTextLeave}
-			>
-				Designing
-			</HeroTitleLine>
-
-			<HeroTitleLine
-				isInteractive={isInteractive}
-				onTextEnter={onTextEnter}
-				onTextLeave={onTextLeave}
-			>
-				With <span className={heartClassName}>Heart.</span>
-			</HeroTitleLine>
-
-			<HeroTitleLine
-				isInteractive={isInteractive}
-				onTextEnter={onTextEnter}
-				onTextLeave={onTextLeave}
-			>
-				Building
-			</HeroTitleLine>
-
-			<HeroTitleLine
-				isInteractive={isInteractive}
-				onTextEnter={onTextEnter}
-				onTextLeave={onTextLeave}
-			>
-				With <span className={logicClassName}>Logic.</span>
-			</HeroTitleLine>
-		</>
+		</motion.span>
 	);
 }
 
 export default function HeroSection() {
-	const sectionRef = useRef<HTMLElement | null>(null);
-	const titleRef = useRef<HTMLDivElement | null>(null);
+	const cursorX = useMotionValue(0);
+	const cursorY = useMotionValue(0);
+	const gridX = useMotionValue(0);
+	const gridY = useMotionValue(0);
+	const titleX = useMotionValue(0);
+	const titleY = useMotionValue(0);
+
+	const smoothCursorX = useSpring(cursorX, { stiffness: 420, damping: 45 });
+	const smoothCursorY = useSpring(cursorY, { stiffness: 420, damping: 45 });
+	const smoothGridX = useSpring(gridX, { stiffness: 180, damping: 30 });
+	const smoothGridY = useSpring(gridY, { stiffness: 180, damping: 30 });
+	const smoothTitleX = useSpring(titleX, { stiffness: 420, damping: 45 });
+	const smoothTitleY = useSpring(titleY, { stiffness: 420, damping: 45 });
 
 	const [displayedWord, setDisplayedWord] = useState("");
 	const [wordIndex, setWordIndex] = useState(0);
@@ -93,14 +76,18 @@ export default function HeroSection() {
 	const [showIntroTooltip, setShowIntroTooltip] = useState(true);
 	const [isTextHovered, setIsTextHovered] = useState(false);
 
+	const cursorRadius = isTextHovered ? "8rem" : "3.2rem";
+	const titleRadius = isTextHovered ? "8rem" : "0rem";
+
+	const dottedMask = useMotionTemplate`radial-gradient(circle ${cursorRadius} at ${smoothCursorX}px ${smoothCursorY}px, black 0%, black 98%, transparent 100%)`;
+	const titleMask = useMotionTemplate`radial-gradient(circle ${titleRadius} at ${smoothTitleX}px ${smoothTitleY}px, black 0%, black 98%, transparent 100%)`;
+
 	useEffect(() => {
 		const tooltipTimeout = window.setTimeout(() => {
 			setShowIntroTooltip(false);
 		}, 2600);
 
-		return () => {
-			window.clearTimeout(tooltipTimeout);
-		};
+		return () => window.clearTimeout(tooltipTimeout);
 	}, []);
 
 	useEffect(() => {
@@ -111,9 +98,7 @@ export default function HeroSection() {
 				setIsDeleting(true);
 			}, 900);
 
-			return () => {
-				window.clearTimeout(pauseTimeout);
-			};
+			return () => window.clearTimeout(pauseTimeout);
 		}
 
 		if (isDeleting && displayedWord === "") {
@@ -124,9 +109,7 @@ export default function HeroSection() {
 				});
 			}, 250);
 
-			return () => {
-				window.clearTimeout(nextWordTimeout);
-			};
+			return () => window.clearTimeout(nextWordTimeout);
 		}
 
 		const typingTimeout = window.setTimeout(
@@ -137,97 +120,131 @@ export default function HeroSection() {
 			isDeleting ? 45 : 90,
 		);
 
-		return () => {
-			window.clearTimeout(typingTimeout);
-		};
+		return () => window.clearTimeout(typingTimeout);
 	}, [displayedWord, isDeleting, wordIndex]);
 
 	function handlePointerMove(event: PointerEvent<HTMLElement>) {
-		const section = sectionRef.current;
-		const title = titleRef.current;
-
-		if (!section) {
-			return;
-		}
-
+		const section = event.currentTarget;
 		const sectionRect = section.getBoundingClientRect();
-		const cursorX = event.clientX - sectionRect.left;
-		const cursorY = event.clientY - sectionRect.top;
 
-		const gridX = (cursorX - sectionRect.width / 2) / 42;
-		const gridY = (cursorY - sectionRect.height / 2) / 42;
+		const nextCursorX = event.clientX - sectionRect.left;
+		const nextCursorY = event.clientY - sectionRect.top;
 
-		section.style.setProperty("--cursor-x", `${cursorX}px`);
-		section.style.setProperty("--cursor-y", `${cursorY}px`);
-		section.style.setProperty("--grid-x", `${gridX}px`);
-		section.style.setProperty("--grid-y", `${gridY}px`);
+		cursorX.set(nextCursorX);
+		cursorY.set(nextCursorY);
 
-		if (!title) {
+		gridX.set((nextCursorX - sectionRect.width / 2) / 42);
+		gridY.set((nextCursorY - sectionRect.height / 2) / 42);
+
+		const titleElement = section.querySelector("[data-hero-title]");
+		if (!(titleElement instanceof HTMLElement)) {
 			return;
 		}
 
-		const titleRect = title.getBoundingClientRect();
-		const titleX = event.clientX - titleRect.left;
-		const titleY = event.clientY - titleRect.top;
+		const titleRect = titleElement.getBoundingClientRect();
 
-		title.style.setProperty("--title-x", `${titleX}px`);
-		title.style.setProperty("--title-y", `${titleY}px`);
-	}
-
-	function handleTextEnter() {
-		setIsTextHovered(true);
-	}
-
-	function handleTextLeave() {
-		setIsTextHovered(false);
+		titleX.set(event.clientX - titleRect.left);
+		titleY.set(event.clientY - titleRect.top);
 	}
 
 	return (
 		<section
-			ref={sectionRef}
-			className={`hero-interactive relative grid min-h-screen min-w-screen place-items-center overflow-hidden bg-blk1 px-6 py-32 text-center text-cream ${
-				isTextHovered ? "hero-text-active" : ""
-			}`}
+			className="group relative grid min-h-svh w-full place-items-center overflow-hidden bg-blk1 px-5 py-24 text-center text-cream sm:px-6 sm:py-28 md:min-h-screen md:py-32"
 			onPointerMove={handlePointerMove}
 		>
-			<div className="hero-motion-bg pointer-events-none absolute inset-0" />
-
-			{/* Tooltip on initial load */}
-			<div
+			<motion.div
 				aria-hidden="true"
-				className={`hero-cursor-tooltip pointer-events-none absolute left-0 top-0 z-30 rounded-full border border-logic bg-blk1 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-logic transition-opacity duration-1000 ${
-					showIntroTooltip ? "opacity-100" : "opacity-0"
-				}`}
+				className="pointer-events-none absolute inset-0 opacity-75"
+				style={{
+					backgroundImage:
+						"linear-gradient(color-mix(in srgb, var(--cream) 4%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--cream) 4%, transparent) 1px, transparent 1px)",
+					backgroundSize: "1.4rem 1.4rem",
+					backgroundPositionX: smoothGridX,
+					backgroundPositionY: smoothGridY,
+				}}
+			/>
+
+			<motion.div
+				aria-hidden="true"
+				className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--cream)_1px,transparent_1px)] bg-size-[1rem_1rem] max-md:hidden"
+				animate={{ opacity: isTextHovered ? 0.3 : 0.22 }}
+				initial={{ opacity: 0 }}
+				style={{
+					WebkitMaskImage: dottedMask,
+					maskImage: dottedMask,
+				}}
+			/>
+
+			<motion.div
+				aria-hidden="true"
+				className="pointer-events-none absolute left-0 top-0 z-30 hidden rounded-full border border-logic bg-blk1 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-logic md:block"
+				initial={{ opacity: 1 }}
+				animate={{ opacity: showIntroTooltip ? 1 : 0 }}
+				transition={{ duration: 1 }}
+				style={{
+					x: smoothCursorX,
+					y: smoothCursorY,
+					translateX: "0.9rem",
+					translateY: "0.9rem",
+					rotate: -2,
+				}}
 			>
-				<span className="hero-cursor-type">Hello there!</span>
-			</div>
+				<span className="inline-block max-w-[13ch] overflow-hidden whitespace-nowrap border-r-2 border-logic animate-[cursor-tooltip-type_900ms_steps(11)_both,cursor-tooltip-caret_650ms_steps(1)_infinite]">
+					Hello there!
+				</span>
+			</motion.div>
 
 			<div className="relative z-10 mx-auto w-full max-w-6xl">
-				<p className="hero-kicker mb-7 text-sm font-medium uppercase tracking-[0.42em] text-muted-cream md:mb-8 md:text-xl">
+				<motion.p
+					className="mb-6 text-xs font-medium uppercase tracking-[0.32em] text-muted-cream sm:mb-7 sm:text-sm md:mb-8 md:text-xl md:tracking-[0.42em]"
+					initial={{ opacity: 0, y: 16 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1 }}
+				>
 					Jamie Del Rosario
-				</p>
+				</motion.p>
 
-				<div ref={titleRef} className="hero-title-wrap relative">
-					<div className="hero-title-base text-[clamp(4.5rem,9vw,9.25rem)] font-black uppercase leading-[0.87] tracking-[-0.075em]">
-						<HeroTitleContent
-							variant="base"
-							onTextEnter={handleTextEnter}
-							onTextLeave={handleTextLeave}
-						/>
+				<div data-hero-title className="relative">
+					<div className="text-[clamp(3.2rem,17vw,9.25rem)] font-black uppercase leading-[0.9] tracking-[-0.07em] sm:text-[clamp(4.5rem,12vw,9.25rem)] md:leading-[0.87] md:tracking-[-0.075em]">
+						{titleLines.map((line, index) => (
+							<HeroTitleLine
+								key={index}
+								index={index}
+								onTextEnter={() => setIsTextHovered(true)}
+								onTextLeave={() => setIsTextHovered(false)}
+							>
+								{line}
+							</HeroTitleLine>
+						))}
 					</div>
 
-					<div
+					<motion.div
 						aria-hidden="true"
-						className="hero-title-highlight pointer-events-none absolute inset-0 text-[clamp(4.5rem,9vw,9.25rem)] font-black uppercase leading-[0.87] tracking-[-0.075em]"
+						className="pointer-events-none absolute inset-0 text-[clamp(3.2rem,17vw,9.25rem)] font-black uppercase leading-[0.9] tracking-[-0.07em] text-logic sm:text-[clamp(4.5rem,12vw,9.25rem)] md:leading-[0.87] md:tracking-[-0.075em]"
+						animate={{ opacity: isTextHovered ? 1 : 0 }}
+						transition={{ duration: 0.12 }}
+						style={{
+							WebkitMaskImage: titleMask,
+							maskImage: titleMask,
+						}}
 					>
-						<HeroTitleContent variant="highlight" />
-					</div>
+						{titleLines.map((line, index) => (
+							<span key={index} className="block">
+								{line}
+							</span>
+						))}
+					</motion.div>
 				</div>
 
-				<p className="hero-typewriter mt-8 text-sm font-medium uppercase tracking-[0.42em] text-muted-cream md:mt-10 md:text-xl">
+				<motion.p
+					className="mt-7 text-xs font-medium uppercase tracking-[0.32em] text-muted-cream sm:mt-8 sm:text-sm md:mt-10 md:text-xl md:tracking-[0.42em]"
+					initial={{ opacity: 0, y: 16 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.7, delay: 0.82 }}
+				>
 					<span>{displayedWord}</span>
-					<span className="hero-type-caret" />
-				</p>
+					<span className="ml-[0.2em] inline-block h-[1em] w-[0.08em] translate-y-[0.15em] animate-[hero-caret-blink_800ms_steps(1)_infinite] bg-logic" />
+				</motion.p>
 			</div>
 		</section>
 	);

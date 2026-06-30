@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import ProjectCard from "@/components/sections/Projects/ProjectCard";
 import SearchField from "@/components/sections/Projects/SearchField";
@@ -12,30 +12,36 @@ interface ProjectsPageClientProps {
 	projects: Project[];
 }
 
+type ProjectView = "grid" | "list";
+
 export default function ProjectsPageClient({
 	projects,
 }: ProjectsPageClientProps) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-	const [view, setView] = useState<"grid" | "list">("grid");
+	const [view, setView] = useState<ProjectView>("grid");
 
 	const availableTags = useMemo(() => {
 		const tags = projects.flatMap((project) => project.tags);
-		return Array.from(new Set(tags)).sort();
+		return [...new Set(tags)].sort();
 	}, [projects]);
 
 	const filteredProjects = useMemo(() => {
 		const normalizedSearch = searchQuery.trim().toLowerCase();
 
 		return projects.filter((project) => {
+			const searchableText = [
+				project.title,
+				project.description,
+				project.date,
+				...project.tags,
+			]
+				.join(" ")
+				.toLowerCase();
+
 			const matchesSearch =
 				normalizedSearch.length === 0 ||
-				project.title.toLowerCase().includes(normalizedSearch) ||
-				project.description.toLowerCase().includes(normalizedSearch) ||
-				project.date.toLowerCase().includes(normalizedSearch) ||
-				project.tags.some((tag) =>
-					tag.toLowerCase().includes(normalizedSearch),
-				);
+				searchableText.includes(normalizedSearch);
 
 			const matchesTags =
 				selectedTags.length === 0 ||
@@ -102,26 +108,30 @@ export default function ProjectsPageClient({
 						{filteredProjects.length > 0 ? (
 							view === "grid" ? (
 								<motion.div
+									key="grid"
 									layout
 									className="mt-12 columns-1 gap-12 md:columns-2"
 								>
 									{filteredProjects.map((project) => (
-										<div
+										<motion.div
+											layout
 											key={project.slug}
 											className="mb-12 break-inside-avoid"
 										>
 											<ProjectCard project={project} view={view} />
-										</div>
+										</motion.div>
 									))}
 								</motion.div>
 							) : (
-								<motion.div layout className="mt-12 space-y-28">
+								<motion.div
+									key="list"
+									layout
+									className="mt-12 space-y-28"
+								>
 									{filteredProjects.map((project) => (
-										<ProjectCard
-											key={project.slug}
-											project={project}
-											view={view}
-										/>
+										<motion.div layout key={project.slug}>
+											<ProjectCard project={project} view={view} />
+										</motion.div>
 									))}
 								</motion.div>
 							)
