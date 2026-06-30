@@ -3,9 +3,9 @@ import ContactForm from "@/components/sections/Contact/ContactForm";
 export default function ContactHero() {
 	return (
 		<section className="relative min-h-screen overflow-hidden bg-blk1 px-6 py-28 text-cream md:px-10">
-			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_35%,color-mix(in_srgb,var(--logic)_16%,transparent),transparent_32%)]" />
+			{/* <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_35%,color-mix(in_srgb,var(--logic)_16%,transparent),transparent_32%)]" /> */}
 
-			<div className="relative z-10 mx-auto grid max-w-7xl gap-16 lg:grid-cols-[1fr_32rem] lg:items-center">
+			<div className="relative z-10 mx-auto grid max-w-7xl gap-16 lg:grid-cols lg:items-center">
 				<div>
 					<p className="animate-contact-fade-up text-xs font-medium uppercase tracking-[0.45em] text-muted-cream">
 						Send me a message

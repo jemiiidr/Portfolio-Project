@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { ContactFieldName } from "@/types/contact";
 
 interface ContactFieldProps {
@@ -19,15 +22,23 @@ export default function ContactField({
 }: ContactFieldProps) {
 	const fieldId = `contact-${name}`;
 
-	const inputClassName =
-		"peer w-full border-b border-muted-cream/70 bg-transparent pb-3 pt-8 text-xl font-bold text-cream outline-none transition duration-300 placeholder:text-transparent focus:border-logic md:text-2xl";
+	const [value, setValue] = useState(defaultValue ?? "");
+	const [isFocused, setIsFocused] = useState(false);
+
+	const isFloating = isFocused || value.trim().length > 0;
+
+	const fieldClassName =
+		"w-full border-b border-muted-cream/70 bg-transparent pb-3 pt-8 text-xl font-bold text-cream outline-none transition duration-300 placeholder:text-transparent focus:border-logic md:text-2xl [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--blk1)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--cream)] [&:-webkit-autofill]:caret-cream";
+
+	const labelClassName = `pointer-events-none absolute left-0 origin-left font-black uppercase transition-all duration-300 ${
+		isFloating
+			? "top-0 text-sm tracking-[0.2em] text-logic"
+			: "top-7 text-3xl tracking-[-0.06em] text-cream md:text-4xl"
+	}`;
 
 	return (
-		<div className="group relative block">
-			<label
-				htmlFor={fieldId}
-				className="pointer-events-none absolute left-0 top-0 origin-left text-sm font-black uppercase tracking-[0.2em] text-logic transition-all duration-300 peer-placeholder-shown:top-7 peer-placeholder-shown:text-3xl peer-placeholder-shown:tracking-[-0.06em] peer-placeholder-shown:text-cream group-focus-within:top-0 group-focus-within:text-sm group-focus-within:tracking-[0.2em] group-focus-within:text-logic md:peer-placeholder-shown:text-4xl"
-			>
+		<div className="relative block">
+			<label htmlFor={fieldId} className={labelClassName}>
 				{label}
 				{required ? <span className="text-logic">*</span> : null}
 			</label>
@@ -36,21 +47,27 @@ export default function ContactField({
 				<textarea
 					id={fieldId}
 					name={name}
-					defaultValue={defaultValue}
+					value={value}
 					rows={4}
 					required={required}
 					placeholder={label}
-					className={`${inputClassName} min-h-36 resize-none`}
+					onFocus={() => setIsFocused(true)}
+					onBlur={() => setIsFocused(false)}
+					onChange={(event) => setValue(event.target.value)}
+					className={`${fieldClassName} min-h-36 resize-none`}
 				/>
 			) : (
 				<input
 					id={fieldId}
 					name={name}
-					defaultValue={defaultValue}
+					value={value}
 					type={type}
 					required={required}
 					placeholder={label}
-					className={inputClassName}
+					onFocus={() => setIsFocused(true)}
+					onBlur={() => setIsFocused(false)}
+					onChange={(event) => setValue(event.target.value)}
+					className={fieldClassName}
 				/>
 			)}
 		</div>

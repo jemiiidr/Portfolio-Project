@@ -741,3 +741,42 @@ body {
 	background-clip: text;
 	-webkit-background-clip: text;
 }
+
+/* TAG COMBOBOX SCROLLBAR */
+.tag-combobox-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: var(--logic)
+		color-mix(in srgb, var(--cream) 10%, transparent);
+}
+
+.tag-combobox-scrollbar::-webkit-scrollbar {
+	width: 0.45rem;
+}
+
+.tag-combobox-scrollbar::-webkit-scrollbar-track {
+	background: color-mix(in srgb, var(--cream) 8%, transparent);
+}
+
+.tag-combobox-scrollbar::-webkit-scrollbar-thumb {
+	background: var(--logic);
+	border-radius: 9999px;
+}
+
+.tag-combobox-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: var(--heart);
+}
+
+
+
+/* For autofill on contact form */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--cream);
+  caret-color: var(--cream);
+  box-shadow: 0 0 0 1000px var(--blk1) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}

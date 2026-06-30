@@ -56,9 +56,9 @@ export default function ProjectsPageClient({
 	}
 
 	function removeTag(tag: string) {
-		setSelectedTags((currentTags) => {
-			return currentTags.filter((currentTag) => currentTag !== tag);
-		});
+		setSelectedTags((currentTags) =>
+			currentTags.filter((currentTag) => currentTag !== tag),
+		);
 	}
 
 	return (
@@ -100,23 +100,31 @@ export default function ProjectsPageClient({
 
 					<AnimatePresence mode="popLayout">
 						{filteredProjects.length > 0 ? (
-							<motion.div
-								key={view}
-								layout
-								className={
-									view === "grid"
-										? "mt-12 grid gap-x-12 gap-y-24 md:grid-cols-2"
-										: "mt-12 space-y-28"
-								}
-							>
-								{filteredProjects.map((project) => (
-									<ProjectCard
-										key={project.slug}
-										project={project}
-										view={view}
-									/>
-								))}
-							</motion.div>
+							view === "grid" ? (
+								<motion.div
+									layout
+									className="mt-12 columns-1 gap-12 md:columns-2"
+								>
+									{filteredProjects.map((project) => (
+										<div
+											key={project.slug}
+											className="mb-12 break-inside-avoid"
+										>
+											<ProjectCard project={project} view={view} />
+										</div>
+									))}
+								</motion.div>
+							) : (
+								<motion.div layout className="mt-12 space-y-28">
+									{filteredProjects.map((project) => (
+										<ProjectCard
+											key={project.slug}
+											project={project}
+											view={view}
+										/>
+									))}
+								</motion.div>
+							)
 						) : (
 							<motion.div
 								key="empty"
