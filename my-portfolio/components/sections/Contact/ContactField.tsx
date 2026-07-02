@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ContactFieldName } from "@/types/contact";
 
 interface ContactFieldProps {
@@ -22,8 +22,12 @@ export default function ContactField({
 }: ContactFieldProps) {
 	const fieldId = `contact-${name}`;
 
-	const [value, setValue] = useState(defaultValue ?? "");
+	const [value, setValue] = useState(defaultValue);
 	const [isFocused, setIsFocused] = useState(false);
+
+	useEffect(() => {
+		setValue(defaultValue);
+	}, [defaultValue]);
 
 	const isFloating = isFocused || value.trim().length > 0;
 
@@ -40,7 +44,7 @@ export default function ContactField({
 		<div className="relative block">
 			<label htmlFor={fieldId} className={labelClassName}>
 				{label}
-				{required ? <span className="text-logic">*</span> : null}
+				{required && <span className="text-logic">*</span>}
 			</label>
 
 			{multiline ? (
@@ -53,20 +57,20 @@ export default function ContactField({
 					placeholder={label}
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
-					onChange={(event) => setValue(event.target.value)}
+					onChange={(e) => setValue(e.target.value)}
 					className={`${fieldClassName} min-h-36 resize-none`}
 				/>
 			) : (
 				<input
 					id={fieldId}
 					name={name}
-					value={value}
 					type={type}
+					value={value}
 					required={required}
 					placeholder={label}
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
-					onChange={(event) => setValue(event.target.value)}
+					onChange={(e) => setValue(e.target.value)}
 					className={fieldClassName}
 				/>
 			)}

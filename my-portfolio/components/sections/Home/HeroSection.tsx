@@ -210,7 +210,7 @@ export default function HeroSection() {
 
 			<motion.div
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle,var(--cream)_1px,transparent_1px)] bg-[size:1rem_1rem] md:block"
+				className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(circle,var(--cream)_1px,transparent_1px)] bg-size-[1rem_1rem] md:block"
 				initial={{ opacity: 0 }}
 				animate={{ opacity: isTextHovered ? 0.3 : 0.22 }}
 				transition={{ duration: 0.16 }}
