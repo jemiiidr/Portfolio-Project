@@ -1,6 +1,7 @@
-import Image from "next/image";
+// src/app/projects/[slug]/page.tsx
 import { notFound } from "next/navigation";
-
+import ProjectCarousel from "@/components/sections/Projects/ProjectCarousel";
+import ProjectComments from "@/components/sections/Projects/ProjectComments";
 import { projects } from "@/lib/project";
 
 interface ProjectPageProps {
@@ -25,42 +26,53 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 	}
 
 	return (
-		<main className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-20">
-			<Image
-				src={project.imageSrc}
-				alt={project.imageAlt}
-				width={1600}
-				height={900}
-				priority
-				className="w-full border border-muted-cream/50 object-cover"
-			/>
+		<main className="min-h-screen bg-blk2 text-cream">
+			
+			<ProjectCarousel images={project.images} />
 
-			<section className="space-y-6">
-				<div className="space-y-2">
-					<p className="text-xs font-black uppercase tracking-[0.08em] text-logic">
-						{project.date}
-					</p>
+			<section className="bg-blk2 px-6 py-14 md:px-12">
+				<div className="mx-auto max-w-5xl">
+					<div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+						<div>
+							<p className="text-xs font-black uppercase tracking-[0.08em] text-logic">
+								{project.date}
+							</p>
 
-					<h1 className="text-4xl font-black uppercase md:text-5xl">
-						{project.title}
-					</h1>
+							<h1 className="mt-2 max-w-4xl text-4xl font-black uppercase tracking-[-0.06em] text-cream md:text-5xl">
+								{project.title}
+							</h1>
+						</div>
 
-					<p className="max-w-3xl leading-8 text-muted-cream">
+						{project.siteUrl && (
+							<a
+								href={project.siteUrl}
+								target="_blank"
+								rel="noreferrer"
+								className="w-fit rounded-full bg-logic px-8 py-3 text-xs font-black uppercase tracking-widest text-blk1 transition hover:scale-105"
+							>
+								Visit Site
+							</a>
+						)}
+					</div>
+
+					<p className="mt-5 max-w-3xl text-sm font-bold leading-8 text-muted-cream">
 						{project.description}
 					</p>
-				</div>
 
-				<div className="flex flex-wrap gap-2">
-					{project.tags.map((tag) => (
-						<span
-							key={tag}
-							className="bg-logic px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-blk1"
-						>
-							{tag}
-						</span>
-					))}
+					<div className="mt-6 flex flex-wrap gap-2">
+						{project.tags.map((tag) => (
+							<span
+								key={tag}
+								className="bg-logic px-3 py-1 text-xs font-black uppercase tracking-[0.08em] text-blk1"
+							>
+								{tag}
+							</span>
+						))}
+					</div>
 				</div>
 			</section>
+
+			<ProjectComments projectSlug={project.slug} />
 		</main>
 	);
 }

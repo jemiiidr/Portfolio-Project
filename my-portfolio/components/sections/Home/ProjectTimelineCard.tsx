@@ -43,8 +43,8 @@ export default function ProjectTimelineCard({
 
 					<div className="relative mt-6 overflow-hidden border border-card-border bg-card">
 						<Image
-							src={project.imageSrc}
-							alt={project.imageAlt}
+							src={project.thumbnailSrc}
+							alt={project.thumbnailAlt}
 							width={900}
 							height={520}
 							className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
